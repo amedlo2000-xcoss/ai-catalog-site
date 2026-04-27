@@ -1,0 +1,574 @@
+/* ============================================================
+   CatGame.css — 猫の色戻しパズルゲームのスタイル
+   パステルカラーを使ったかわいいデザイン
+   ============================================================ */
+
+/* ── セクション全体 ─────────────────────────────────────── */
+.catgame-section {
+  padding: 80px 0 100px;
+  /* 淡いパープル〜ブルー〜ピンクのグラデーション背景 */
+  background: linear-gradient(135deg, #fdf4ff 0%, #f0f4ff 50%, #fff4f7 100%);
+}
+
+/* セクションの最大幅・中央寄せ */
+.catgame-section-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* セクション見出しエリア */
+.catgame-section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* セクションタイトル文字 */
+.catgame-section-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #4a3060;  /* 深めのパープル */
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+/* セクションの説明文 */
+.catgame-section-desc {
+  color: #7c6a8a;
+  font-size: 1rem;
+}
+
+/* ── ゲームカード（白いカード） ─────────────────────────── */
+.catgame-card {
+  background: #ffffff;
+  border-radius: 24px;
+  /* パープル系の柔らかい影 */
+  box-shadow: 0 8px 40px rgba(100, 60, 150, 0.13);
+  padding: 40px 36px;
+  border: 2px solid #ede0f8;
+}
+
+/* ============================================================
+   タイトル画面
+   ============================================================ */
+.catgame-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* タイトルの大きな見出し */
+.catgame-title-heading {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #4a3060;
+}
+
+/* タイトルの説明文 */
+.catgame-title-desc {
+  color: #7c6a8a;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+/* タイトル画面に表示するサンプル猫を中央に置く */
+.catgame-title-cat {
+  display: flex;
+  justify-content: center;
+}
+
+/* スタートボタン：グラデーションのある丸いボタン */
+.catgame-start-btn {
+  background: linear-gradient(135deg, #d887f5, #a877e0);
+  color: white;
+  border: none;
+  padding: 14px 42px;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(168, 119, 224, 0.42);
+  font-family: inherit;
+}
+
+/* スタートボタンのホバー */
+.catgame-start-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 22px rgba(168, 119, 224, 0.52);
+}
+
+/* ヒントテキスト */
+.catgame-hint-text {
+  color: #a08cba;
+  font-size: 0.88rem;
+}
+
+/* ============================================================
+   ゲーム画面
+   ============================================================ */
+.catgame-game {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* ── 猫2匹の並び（お手本 VS プレイヤー）── */
+.catgame-cats-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;  /* スマホでは縦に並ぶ */
+}
+
+/* 猫1匹分のボックス */
+.catgame-cat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 155px;
+}
+
+/* 猫のラベル（「お手本」「あなたの猫」） */
+.catgame-cat-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 4px 16px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+/* お手本ラベルは黄色系 */
+.catgame-cat-label--ref {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* プレイヤーラベルは緑系 */
+.catgame-cat-label--player {
+  background: #d4edda;
+  color: #155724;
+}
+
+/* VS テキスト */
+.catgame-vs {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #c8a4e0;
+  flex-shrink: 0;
+  align-self: center;
+  margin-top: 24px;  /* ラベル分を調整して視覚的に中央に */
+}
+
+/* 答え合わせ後に表示するメッセージ（ポップアニメーション付き） */
+.catgame-expression-msg {
+  font-size: 0.83rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 10px;
+  animation: catgame-pop 0.3s ease;
+}
+
+/* 正解メッセージ：緑 */
+.catgame-expression-msg--happy {
+  background: #d4f5e2;
+  color: #0d5c30;
+}
+
+/* 不正解メッセージ：赤 */
+.catgame-expression-msg--angry {
+  background: #fde0e4;
+  color: #7a1a2a;
+}
+
+/* ポップアニメーション：小さく→大きくなって現れる */
+@keyframes catgame-pop {
+  0%   { transform: scale(0.7); opacity: 0; }
+  70%  { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── 部位選択タブ（背中・足・尻尾）── */
+.catgame-part-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 各タブボタン */
+.catgame-part-tab {
+  background: #f3eeff;
+  color: #7c6a8a;
+  border: 2px solid #e0cff4;
+  padding: 10px 26px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  position: relative;
+  font-family: inherit;
+}
+
+/* タブのホバー */
+.catgame-part-tab:hover {
+  background: #e8d8ff;
+  border-color: #c4a8e8;
+}
+
+/* 選択中のタブ：グラデーション + 影 */
+.catgame-part-tab--active {
+  background: linear-gradient(135deg, #d887f5, #a877e0);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 3px 12px rgba(168, 119, 224, 0.42);
+  transform: translateY(-1px);
+}
+
+/* 答え合わせ結果バッジ（タブ右に表示） */
+.catgame-result-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.68rem;
+  font-weight: 900;
+  margin-left: 7px;
+}
+
+/* 正解バッジ：緑 */
+.catgame-result-badge--ok {
+  background: #d4edda;
+  color: #155724;
+}
+
+/* 不正解バッジ：赤 */
+.catgame-result-badge--ng {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ── 色・模様の選択ピッカーエリア ── */
+.catgame-picker {
+  background: #fdf8ff;
+  border-radius: 18px;
+  padding: 22px 20px;
+  border: 1px solid #ede0f8;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ピッカー内のラベル（「色を選んでね」など） */
+.catgame-picker-label {
+  font-size: 0.83rem;
+  font-weight: 800;
+  color: #7c6a8a;
+  margin-bottom: 10px;
+}
+
+/* 色ボタンを横並びにするグリッド */
+.catgame-color-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 各色ボタン */
+.catgame-color-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: white;
+  border: 2px solid #e0cff4;
+  border-radius: 13px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.15s;
+  min-width: 58px;
+  font-family: inherit;
+}
+
+/* 色ボタンのホバー */
+.catgame-color-btn:hover {
+  border-color: #c4a8e8;
+  transform: translateY(-2px);
+}
+
+/* 選択中の色ボタン */
+.catgame-color-btn--active {
+  border-color: #a877e0;
+  background: #f3eeff;
+  box-shadow: 0 0 0 3px rgba(168, 119, 224, 0.25);
+  transform: translateY(-2px);
+}
+
+/* 色のサンプル四角 */
+.catgame-color-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 色の名前ラベル */
+.catgame-color-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #7c6a8a;
+}
+
+/* 模様ボタンを横並びにするグリッド */
+.catgame-pattern-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 各模様ボタン */
+.catgame-pattern-btn {
+  background: white;
+  border: 2px solid #e0cff4;
+  border-radius: 11px;
+  padding: 9px 20px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #7c6a8a;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+/* 模様ボタンのホバー */
+.catgame-pattern-btn:hover {
+  border-color: #c4a8e8;
+  color: #4a3060;
+}
+
+/* 選択中の模様ボタン */
+.catgame-pattern-btn--active {
+  background: linear-gradient(135deg, #d887f5, #a877e0);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 10px rgba(168, 119, 224, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── 答え合わせボタン ── */
+.catgame-check-btn {
+  background: linear-gradient(135deg, #ff9a9e, #f5879a);
+  color: #6a0a1a;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 999px;
+  font-size: 1.02rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(245, 135, 154, 0.4);
+  align-self: center;
+  font-family: inherit;
+}
+
+/* 答え合わせボタンのホバー */
+.catgame-check-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 22px rgba(245, 135, 154, 0.52);
+}
+
+/* ============================================================
+   クリア画面
+   ============================================================ */
+.catgame-clear {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* 紙吹雪アイコン */
+.catgame-clear-fireworks {
+  font-size: 2.5rem;
+  animation: catgame-bounce 0.6s ease;
+}
+
+/* 「クリア！」の大きな文字 */
+.catgame-clear-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #4a3060;
+  animation: catgame-celebrate 0.55s ease;
+  line-height: 1;
+}
+
+/* クリア時のお祝いアニメーション */
+@keyframes catgame-celebrate {
+  0%   { transform: scale(0.4) rotate(-15deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(6deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* バウンスアニメーション（紙吹雪用） */
+@keyframes catgame-bounce {
+  0%   { transform: translateY(-20px); opacity: 0; }
+  60%  { transform: translateY(4px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* クリアメッセージ */
+.catgame-clear-msg {
+  font-size: 1.2rem;
+  color: #7c6a8a;
+  font-weight: 700;
+}
+
+/* 正解の組み合わせを表示するボックス */
+.catgame-clear-answer {
+  background: #fdf8ff;
+  border: 1px solid #ede0f8;
+  border-radius: 18px;
+  padding: 22px 28px;
+  width: 100%;
+  max-width: 380px;
+  text-align: left;
+}
+
+/* 「正解の組み合わせ」の小見出し */
+.catgame-clear-answer h4 {
+  font-size: 0.88rem;
+  color: #7c6a8a;
+  margin-bottom: 14px;
+  font-weight: 800;
+}
+
+/* 各部位の正解行 */
+.catgame-answer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* 部位名（背中・足・尻尾） */
+.catgame-answer-part {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #4a3060;
+  min-width: 36px;
+}
+
+/* 色のラベル（背景色付き） */
+.catgame-answer-color {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #333;
+}
+
+/* 模様のラベル */
+.catgame-answer-pattern {
+  font-size: 0.78rem;
+  color: #7c6a8a;
+  background: #f0eaf8;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+/* もう一度あそぶボタン */
+.catgame-restart-btn {
+  background: linear-gradient(135deg, #d887f5, #a877e0);
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(168, 119, 224, 0.42);
+  font-family: inherit;
+}
+
+/* もう一度あそぶボタンのホバー */
+.catgame-restart-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 22px rgba(168, 119, 224, 0.52);
+}
+
+/* ============================================================
+   レスポンシブ対応（スマホ向け）
+   ============================================================ */
+
+/* タブレット〜スマホ */
+@media (max-width: 600px) {
+  .catgame-card {
+    padding: 28px 18px;
+    border-radius: 18px;
+  }
+
+  .catgame-section-title {
+    font-size: 1.4rem;
+  }
+
+  /* 猫2匹は縦に並べる */
+  .catgame-cats-row {
+    gap: 14px;
+  }
+
+  /* 各部位タブを少し小さく */
+  .catgame-part-tab {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* 色ボタンを少し小さく */
+  .catgame-color-btn {
+    min-width: 50px;
+    padding: 7px 8px;
+  }
+
+  .catgame-color-swatch {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* クリアタイトルを小さく */
+  .catgame-clear-title {
+    font-size: 2.2rem;
+  }
+
+  .catgame-picker {
+    padding: 16px 14px;
+  }
+}
+
+/* 超小型スマホ */
+@media (max-width: 380px) {
+  .catgame-section-title {
+    font-size: 1.2rem;
+  }
+
+  .catgame-color-btn {
+    min-width: 44px;
+    padding: 6px 6px;
+  }
+
+  .catgame-color-name {
+    font-size: 0.64rem;
+  }
+}
