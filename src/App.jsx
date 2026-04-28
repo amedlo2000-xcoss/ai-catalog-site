@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import './App.css'
 import CatGame from './components/CatGame'
+import NyanBattle from './components/NyanBattle'
 
 const SYSTEMS = [
   { id: 'diagnosis', icon: '🔍', title: 'AI診断ツール', desc: '顧客の悩みを自動分析し最適解を提示', tag: '集客' },
@@ -852,6 +853,9 @@ export default function App() {
 
       {/* ── Cat Puzzle Game（おまけ体験デモ） ── */}
       <CatGame />
+
+      {/* ── ニャンコ属性バトル ── */}
+      <NyanBattle />
 
       {/* ── Contact Modal ── */}
       <ContactModal isOpen={modalOpen} onClose={closeModal} />
