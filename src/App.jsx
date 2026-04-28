@@ -752,6 +752,43 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── Appeal Section ── */}
+      <section className="appeal-section" id="appeal">
+        <div className="appeal-inner">
+          <div className="appeal-badge">2026年 実績50件以上</div>
+          <h2 className="appeal-title">
+            あなたのアプリシステムを、<br />
+            <span className="appeal-price-highlight">月額2万円〜</span>で導入
+          </h2>
+          <p className="appeal-desc">専門知識がなくても、自社専用のアプリ・システムを導入できます。完成したシステムは、あなたのサービスとしてサブスク化・販売・講座化に活用できます。</p>
+          <div className="appeal-emphasis-box">
+            あなたのアプリシステムから、<strong>1,000万円の売上を達成する方法</strong>も提案中。
+          </div>
+          <div className="appeal-cards">
+            <div className="appeal-card">
+              <div className="appeal-card-icon">🏢</div>
+              <h4>自社専用システムとして使える</h4>
+              <p>業務に合わせた完全カスタムのシステムを構築。あなたのブランドで展開できます。</p>
+            </div>
+            <div className="appeal-card">
+              <div className="appeal-card-icon">💰</div>
+              <h4>サブスク・販売に活用できる</h4>
+              <p>完成したシステムをサブスク・一括販売・講座化など多様な収益化に活用できます。</p>
+            </div>
+            <div className="appeal-card">
+              <div className="appeal-card-icon">📈</div>
+              <h4>売上導線まで提案</h4>
+              <p>システム導入だけでなく、売上につながる導線設計・戦略まで一緒に考えます。</p>
+            </div>
+          </div>
+          <div className="appeal-cta-row">
+            <a href="#contact" className="appeal-btn-primary" onClick={(e) => { e.preventDefault(); openModal() }}>無料相談する</a>
+            <a href="#contact" className="appeal-btn-line" onClick={(e) => { e.preventDefault(); openModal() }}>LINEで相談する</a>
+            <a href="#contact" className="appeal-btn-outline" onClick={(e) => { e.preventDefault(); openModal() }}>見積もりを依頼する</a>
+          </div>
+        </div>
+      </section>
+
       {/* ── Systems Grid ── */}
       <section className="systems-section" id="systems">
         <div className="section-inner">
@@ -803,21 +840,23 @@ export default function App() {
               {
                 name: 'ライト', init: '120,000', monthly: '20,000',
                 desc: 'まずは手軽にAIシステムを導入したい方へ',
-                features: ['テンプレート導入', '基本デザイン調整', '簡易サポート'],
+                features: ['テンプレート導入', '簡易カスタム対応'],
                 cta: '今すぐ始める', highlight: false,
+                monthlySuffix: true,
               },
               {
                 name: 'スタンダード', init: '300,000', monthly: '30,000',
                 desc: 'より本格的に活用したいビジネス向け',
-                features: ['一部カスタム対応', 'デザイン調整', '機能追加相談', '月1回 改善提案'],
+                features: ['一部カスタム対応', '導線設計'],
                 cta: '最も人気', highlight: true,
+                monthlySuffix: true,
               },
               {
                 name: 'プレミアム', init: '500,000', monthly: '40,000',
                 desc: '本格導入・成長を加速させたい方へ',
-                features: ['複数機能の組み合わせ', 'オリジナル設計', '導線設計', '継続改善サポート'],
+                features: ['複数機能の組み合わせ', '売上設計込み'],
                 cta: '相談する', highlight: false,
-                suffix: true,
+                suffix: true, monthlySuffix: true,
               },
             ].map(p => (
               <div key={p.name} className={`pricing-card${p.highlight ? ' highlight' : ''}`}>
@@ -826,7 +865,7 @@ export default function App() {
                 <p className="pricing-desc">{p.desc}</p>
                 <div className="pricing-price-box">
                   <div className="pp-init">初期費用 <strong>¥{p.init}</strong>円{p.suffix ? '〜' : ''}</div>
-                  <div className="pp-monthly">月額 <strong>¥{p.monthly}</strong>円{p.suffix ? '〜' : ''}</div>
+                  <div className="pp-monthly">月額 <strong>¥{p.monthly}</strong>円{p.monthlySuffix ? '〜' : ''}</div>
                 </div>
                 <ul className="pricing-features">
                   {p.features.map(f => <li key={f}>✓ {f}</li>)}
