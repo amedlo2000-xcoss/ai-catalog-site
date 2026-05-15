@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useRef } from "react"
 import "./App.css"
 import DemoSection from "./components/DemoSection"
-import ExperienceCatalog from "./components/ExperienceCatalog"
+
 
 const DIAG_ITEMS = [
   { ic: "🌅", lb: "朝を整える" },
@@ -335,10 +335,6 @@ export default function App() {
       <div className="divider" />
 
       <DemoSection />
-
-      <div className="divider" />
-
-      <ExperienceCatalog />
 
       <div className="divider" />
 

@@ -7,6 +7,18 @@ const DEMOS = [
   { id: "lp",         ic: "🖥️", label: "LP生成",   color: "ci-4" },
   { id: "booking",    ic: "📅", label: "予約",     color: "ci-5" },
   { id: "crm",        ic: "👤", label: "顧客管理", color: "ci-6" },
+  { id: "sns_auto",  ic: "📱", label: "SNS自動化",   color: "ci-1" },
+  { id: "love",      ic: "💕", label: "恋愛相談",     color: "ci-2" },
+  { id: "face",      ic: "🪞", label: "顔分析",       color: "ci-3" },
+  { id: "beauty",    ic: "🧴", label: "美容成分",     color: "ci-4" },
+  { id: "palm",      ic: "🖐", label: "手相診断",     color: "ci-5" },
+  { id: "fashion",   ic: "👗", label: "ファッション", color: "ci-6" },
+  { id: "pattern",   ic: "✂",  label: "AI型紙",       color: "ci-1" },
+  { id: "defi",      ic: "📈", label: "DeFi運用",     color: "ci-2" },
+  { id: "crypto",    ic: "🪙", label: "暗号資産",     color: "ci-3" },
+  { id: "xcoss",     ic: "💰", label: "Revenue OS",   color: "ci-4" },
+  { id: "event",     ic: "🗓", label: "イベント管理", color: "ci-5" },
+  { id: "cinematic", ic: "🎬", label: "シネマWEB",    color: "ci-6" },
 ]
 
 function DiagnosisDemo() {
@@ -278,6 +290,127 @@ function CrmDemo() {
   )
 }
 
+function SnsAutoDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>📱</div>
+      <div className="demo-q">投稿作成・導線設計・集客戦略をAIが提案するSNS支援体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(134,239,172,.5)", marginBottom:"24px" }}>SNS自動化 · 集客 · 投稿生成</div>
+      <a href="https://sns-diagnosis-one.vercel.app" target="_blank" rel="noopener noreferrer" className="demo-ext-btn">体験を始める →</a>
+    </div>
+  )
+}
+function LoveDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>💕</div>
+      <div className="demo-q">感情分析・相手心理・未来予測をもとに相談できる恋愛分析体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(249,168,212,.5)", marginBottom:"24px" }}>恋愛 · 感情分析 · 相談</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function FaceDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>🪞</div>
+      <div className="demo-q">第一印象・魅力・改善点をカルテ形式で分析する美容診断体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(196,181,253,.5)", marginBottom:"24px" }}>美容 · 顔分析 · カルテ</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function BeautyIngDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>🧴</div>
+      <div className="demo-q">化粧品成分や使用傾向を分析し、未来の肌リスクを可視化する体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(134,239,172,.5)", marginBottom:"24px" }}>美容 · 成分診断 · スキンケア</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function PalmDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>🖐</div>
+      <div className="demo-q">手の特徴から性格傾向・強み・未来傾向を分析する診断体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(251,191,36,.5)", marginBottom:"24px" }}>手相 · 性格分析 · 占い</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function FashionDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>👗</div>
+      <div className="demo-q">服装提案・着せ替え・クローゼット連携によるコーデ提案体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(249,168,212,.5)", marginBottom:"24px" }}>ファッション · コーデ · スタイル</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function PatternDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>✂</div>
+      <div className="demo-q">頭の中のデザインを3D化し、型紙設計へつなげる未来型制作体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(125,211,252,.5)", marginBottom:"24px" }}>型紙 · 3D · デザイン</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function DefiDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>📈</div>
+      <div className="demo-q">暗号資産のレンジ調整や手数料運用をシミュレーションできる金融AI体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(134,239,172,.5)", marginBottom:"24px" }}>DeFi · 暗号資産 · 運用</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function CryptoDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>🪙</div>
+      <div className="demo-q">市場情報・銘柄分析・AI予測をもとに判断材料を得られる分析体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(251,191,36,.5)", marginBottom:"24px" }}>暗号資産 · 分析 · 予測</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function XcossDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>💰</div>
+      <div className="demo-q">イベント・マルシェの集客、紹介、収益循環を可視化する体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(196,181,253,.5)", marginBottom:"24px" }}>収益 · イベント · マルシェ</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function EventDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>🗓</div>
+      <div className="demo-q">予約・出店申込・顧客管理・運営フローを体験できる管理システム。</div>
+      <div style={{ fontSize:"12px", color:"rgba(125,211,252,.5)", marginBottom:"24px" }}>イベント · 予約 · 管理</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+function CinematicDemo() {
+  return (
+    <div style={{ textAlign:"center", padding:"20px 0" }}>
+      <div style={{ fontSize:"48px", marginBottom:"16px" }}>🎬</div>
+      <div className="demo-q">近未来型LP・世界観デザイン・動きのあるWEB表現を生成する制作体験。</div>
+      <div style={{ fontSize:"12px", color:"rgba(249,168,212,.5)", marginBottom:"24px" }}>WEB · LP · デザイン</div>
+      <div className="consult-sent"><div className="sent-ic">🚧</div><div className="sent-title">準備中</div><div className="sent-sub">この体験システムは現在準備中です</div></div>
+    </div>
+  )
+}
+
 const DEMO_MAP = {
   diagnosis: DiagnosisDemo,
   sns: SnsDemo,
@@ -285,6 +418,18 @@ const DEMO_MAP = {
   lp: LpDemo,
   booking: BookingDemo,
   crm: CrmDemo,
+  sns_auto: SnsAutoDemo,
+  love: LoveDemo,
+  face: FaceDemo,
+  beauty: BeautyIngDemo,
+  palm: PalmDemo,
+  fashion: FashionDemo,
+  pattern: PatternDemo,
+  defi: DefiDemo,
+  crypto: CryptoDemo,
+  xcoss: XcossDemo,
+  event: EventDemo,
+  cinematic: CinematicDemo,
 }
 
 export default function DemoSection() {
