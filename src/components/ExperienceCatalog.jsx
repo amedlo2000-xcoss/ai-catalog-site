@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
 const CATALOG = [
   { id:1,  ic:"📱", title:"SNS自動化AI体験",       desc:"投稿作成・導線設計・集客戦略をAIが提案するSNS支援体験。",             tags:["SNS","自動化","集客"],          url:"https://sns-diagnosis-one.vercel.app", ready:true  },
   { id:2,  ic:"💕", title:"恋愛相談AI体験",         desc:"感情分析・相手心理・未来予測をもとに相談できる恋愛分析体験。",         tags:["恋愛","感情分析","相談"],        url:null, ready:false },
@@ -13,15 +14,66 @@ const CATALOG = [
   { id:11, ic:"🗓", title:"イベント管理アプリ体験", desc:"予約・出店申込・顧客管理・運営フローを体験できる管理システム。",         tags:["イベント","予約","管理"],        url:null, ready:false },
   { id:12, ic:"🎬", title:"シネマティックWEB体験",  desc:"近未来型LP・世界観デザイン・動きのあるWEB表現を生成する制作体験。",   tags:["WEB","LP","デザイン"],          url:null, ready:false },
 ]
+
 const TAG_COLORS = ["rgba(196,181,253,.8)","rgba(125,211,252,.8)","rgba(134,239,172,.8)","rgba(249,168,212,.8)","rgba(251,191,36,.8)"]
+
+function ExperienceModal({ item, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div>
+            <div className="modal-label">Experience Catalog</div>
+            <div className="modal-title">{item.ic} {item.title}</div>
+          </div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="experience-modal-body">
+          {item.ready ? (
+            <p className="experience-modal-desc">{item.desc}</p>
+          ) : (
+            <p className="experience-modal-soon">この体験システムは現在準備中です</p>
+          )}
+
+          <div className="experience-tags" style={{ marginBottom: "20px" }}>
+            {item.tags.map((t, i) => (
+              <span key={t} className="experience-tag" style={{ color: TAG_COLORS[i % TAG_COLORS.length], borderColor: TAG_COLORS[i % TAG_COLORS.length] }}>{t}</span>
+            ))}
+          </div>
+        </div>
+
+        {item.ready && item.url && (
+          <div className="modal-footer">
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="modal-consult"
+              style={{ display: "block", textAlign: "center", textDecoration: "none" }}
+            >
+              体験を始める →
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function ExperienceCatalog() {
   const [hover, setHover] = useState(null)
-  function handleClick(item) {
-    if (item.ready && item.url) { window.open(item.url, "_blank", "noopener,noreferrer") }
-    else { alert("この体験システムは現在準備中です") }
-  }
+  const [modal, setModal] = useState(null)
+
   return (
     <section className="experience-section">
+      {modal && <ExperienceModal item={modal} onClose={() => setModal(null)} />}
+
       <div className="experience-aurora" aria-hidden="true">
         <div className="experience-orb experience-orb-a" />
         <div className="experience-orb experience-orb-b" />
@@ -46,7 +98,10 @@ export default function ExperienceCatalog() {
                 <span key={t} className="experience-tag" style={{ color: TAG_COLORS[i % TAG_COLORS.length], borderColor: TAG_COLORS[i % TAG_COLORS.length] }}>{t}</span>
               ))}
             </div>
-            <button className={"experience-button " + (item.ready ? "experience-button--live" : "experience-button--soon")} onClick={() => handleClick(item)}>
+            <button
+              className={"experience-button " + (item.ready ? "experience-button--live" : "experience-button--soon")}
+              onClick={() => setModal(item)}
+            >
               {item.ready ? "体験を見る →" : "体験準備中"}
             </button>
           </div>
