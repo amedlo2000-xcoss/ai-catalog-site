@@ -1,912 +1,443 @@
-import { useState, useRef } from 'react'
-import './App.css'
-import CatGame from './components/CatGame'
-import NyanBattle from './components/NyanBattle'
+﻿import { useState, useEffect, useRef } from "react"
+import "./App.css"
+import DemoSection from "./components/DemoSection"
+import ExperienceCatalog from "./components/ExperienceCatalog"
 
-const SYSTEMS = [
-  { id: 'diagnosis', icon: '🔍', title: 'AI診断ツール', desc: '顧客の悩みを自動分析し最適解を提示', tag: '集客' },
-  { id: 'course', icon: '📚', title: '講座販売システム', desc: '教材販売・配信・受講者管理を自動化', tag: '収益化' },
-  { id: 'community', icon: '👥', title: 'コミュニティサイト', desc: '会員制コミュニティの構築・運営', tag: 'エンゲージメント' },
-  { id: 'sns', icon: '📱', title: 'SNS自動化', desc: '複数SNSへの投稿を一括スケジュール管理', tag: '集客' },
-  { id: 'lp', icon: '🎯', title: 'LP生成', desc: 'AIがターゲットに合わせたLPを自動生成', tag: '集客' },
-  { id: 'line', icon: '💬', title: 'LINEマーケ', desc: 'LINE配信・チャットボット・セグメント管理', tag: '集客' },
-  { id: 'crm', icon: '📊', title: '顧客管理', desc: '顧客情報・履歴・AI分析を一元管理', tag: '業務効率' },
-  { id: 'booking', icon: '📅', title: '予約システム', desc: 'オンライン予約・自動リマインダー管理', tag: '業務効率' },
-  { id: 'subscription', icon: '💎', title: 'サブスク管理', desc: '定期課金・プラン管理の完全自動化', tag: '収益化' },
+const DIAG_ITEMS = [
+  { ic: "🌅", lb: "朝を整える" },
+  { ic: "💼", lb: "仕事を効率化" },
+  { ic: "✨", lb: "美容・ケア" },
+  { ic: "📱", lb: "SNS発信" },
+  { ic: "🎬", lb: "動画・創作" },
+  { ic: "💡", lb: "副業・収益" },
 ]
 
-// ── Demo: AI診断ツール ──────────────────────────────────────────────────────
-
-function DiagnosisDemo() {
-  const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState({})
-  const [result, setResult] = useState(null)
-
-  const questions = [
-    { id: 'type', q: 'ビジネスの種類は？', opts: ['コーチング・コンサル', 'ECサイト', 'サービス業', 'IT・Web'] },
-    { id: 'challenge', q: '現在の最大の課題は？', opts: ['集客が少ない', '成約率が低い', '業務が煩雑', 'リピートが少ない'] },
-    { id: 'target', q: '月の売上目標は？', opts: ['〜50万円', '50〜100万円', '100〜300万円', '300万円以上'] },
-  ]
-
-  const resultMap = {
-    '集客が少ない': { label: 'AI集客パッケージ', match: 92, systems: ['SNS自動化', 'LP生成', 'AI診断ツール'] },
-    '成約率が低い': { label: 'AI商談支援パッケージ', match: 88, systems: ['LINEマーケ', '顧客管理', 'AI診断ツール'] },
-    '業務が煩雑': { label: 'AI業務効率化パッケージ', match: 95, systems: ['顧客管理', '予約システム', 'サブスク管理'] },
-    'リピートが少ない': { label: 'AI顧客育成パッケージ', match: 90, systems: ['コミュニティ', 'LINEマーケ', 'サブスク管理'] },
-  }
-
-  const answer = (opt) => {
-    const q = questions[step]
-    const next = { ...answers, [q.id]: opt }
-    setAnswers(next)
-    if (step + 1 < questions.length) {
-      setStep(step + 1)
-    } else {
-      setResult(resultMap[next.challenge] || resultMap['集客が少ない'])
-    }
-  }
-
-  if (result) return (
-    <div className="demo-inner diagnosis-result">
-      <div className="score-ring"><span>{result.match}</span><small>点</small></div>
-      <h4>{result.label}が最適です</h4>
-      <div className="tag-row">{result.systems.map(s => <span key={s} className="rtag">{s}</span>)}</div>
-      <p className="result-note">AIが分析した結果、あなたのビジネスには上記システムの組み合わせが最も効果的です。</p>
-      <button className="btn-outline" onClick={() => { setStep(0); setAnswers({}); setResult(null) }}>もう一度試す</button>
-    </div>
-  )
-
-  const q = questions[step]
-  return (
-    <div className="demo-inner">
-      <div className="diag-progress"><div className="diag-bar" style={{ width: `${((step + 1) / questions.length) * 100}%` }} /></div>
-      <p className="diag-step">STEP {step + 1} / {questions.length}</p>
-      <h4 className="diag-q">{q.q}</h4>
-      <div className="diag-opts">
-        {q.opts.map(opt => <button key={opt} className="diag-opt" onClick={() => answer(opt)}>{opt}</button>)}
-      </div>
-    </div>
-  )
+const DIAG_RESULTS = {
+  "朝を整える": [
+    { ic: "🧘", name: "Notion AI", desc: "朝のルーティン・タスク整理に最適", url: "https://notion.so" },
+    { ic: "⏰", name: "Reclaim AI", desc: "スケジュールを自動最適化", url: "https://reclaim.ai" },
+    { ic: "📝", name: "ChatGPT", desc: "日記・振り返り・目標設定", url: "https://chat.openai.com" },
+  ],
+  "仕事を効率化": [
+    { ic: "🤖", name: "ChatGPT", desc: "文書作成・メール・提案書を瞬時に生成", url: "https://chat.openai.com" },
+    { ic: "📊", name: "Gamma", desc: "AIが資料・スライドを自動作成", url: "https://gamma.app" },
+    { ic: "⚡", name: "Zapier AI", desc: "業務フローを自動化・連携", url: "https://zapier.com" },
+  ],
+  "美容・ケア": [
+    { ic: "✨", name: "Perfect Corp", desc: "AIが似合うメイク・カラーを診断", url: "https://www.perfectcorp.com" },
+    { ic: "🌿", name: "Yuka", desc: "化粧品・食品の成分をAI解析", url: "https://yuka.io" },
+    { ic: "💆", name: "Calm AI", desc: "メンタルケア・睡眠改善をサポート", url: "https://www.calm.com" },
+  ],
+  "SNS発信": [
+    { ic: "📱", name: "Buffer AI", desc: "投稿文・最適時間をAIが提案", url: "https://buffer.com" },
+    { ic: "🎨", name: "Canva AI", desc: "SNS画像をAIで瞬時にデザイン", url: "https://canva.com" },
+    { ic: "📈", name: "Lately AI", desc: "バズるコンテンツをAIが分析・生成", url: "https://www.lately.ai" },
+  ],
+  "動画・創作": [
+    { ic: "🎬", name: "Sora", desc: "テキストから高品質動画を生成", url: "https://openai.com/sora" },
+    { ic: "🎨", name: "Midjourney", desc: "プロ品質の画像をAIで生成", url: "https://midjourney.com" },
+    { ic: "🎵", name: "Suno AI", desc: "AIが作詞・作曲・歌声まで生成", url: "https://suno.ai" },
+  ],
+  "副業・収益": [
+    { ic: "💰", name: "ChatGPT", desc: "副業アイデア・コンテンツ量産", url: "https://chat.openai.com" },
+    { ic: "🛒", name: "Shopify Magic", desc: "EC・商品説明をAIが自動生成", url: "https://shopify.com" },
+    { ic: "📧", name: "Copy.ai", desc: "セールス文・広告コピーを量産", url: "https://copy.ai" },
+  ],
 }
 
-// ── Demo: 講座販売システム ────────────────────────────────────────────────────
-
-function CourseDemo() {
-  const [cart, setCart] = useState(null)
-  const [purchased, setPurchased] = useState(false)
-
-  const courses = [
-    { id: 1, title: 'AIビジネス基礎講座', price: 29800, lessons: 12, tag: '人気No.1', students: 1842 },
-    { id: 2, title: 'ChatGPT活用マスター講座', price: 49800, lessons: 20, tag: '最新', students: 987 },
-    { id: 3, title: 'AIマーケティング実践講座', price: 39800, lessons: 16, tag: 'おすすめ', students: 1234 },
-  ]
-
-  if (purchased) return (
-    <div className="demo-inner purchase-success">
-      <div className="success-icon">✅</div>
-      <h4>購入完了！</h4>
-      <p className="cart-title">{cart?.title}</p>
-      <p className="price-confirm">¥{cart?.price.toLocaleString()}</p>
-      <p className="success-note">マイページからすぐに受講を開始できます。</p>
-      <button className="btn-outline" onClick={() => { setCart(null); setPurchased(false) }}>戻る</button>
-    </div>
-  )
-
-  if (cart) return (
-    <div className="demo-inner cart-view">
-      <h4>購入確認</h4>
-      <div className="cart-item">
-        <span>{cart.title}</span>
-        <strong>¥{cart.price.toLocaleString()}</strong>
-      </div>
-      <button className="btn-primary" onClick={() => setPurchased(true)}>購入する</button>
-      <button className="btn-ghost" onClick={() => setCart(null)}>キャンセル</button>
-    </div>
-  )
-
-  return (
-    <div className="demo-inner">
-      <div className="course-list">
-        {courses.map(c => (
-          <div key={c.id} className="course-card">
-            <span className="course-tag">{c.tag}</span>
-            <h5>{c.title}</h5>
-            <div className="course-meta">
-              <span>📹 {c.lessons}レッスン</span>
-              <span>👤 {c.students.toLocaleString()}名受講</span>
-            </div>
-            <div className="course-footer">
-              <strong className="course-price">¥{c.price.toLocaleString()}</strong>
-              <button className="btn-small" onClick={() => setCart(c)}>購入する</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── Demo: コミュニティサイト ──────────────────────────────────────────────────
-
-function CommunityDemo() {
-  const [posts, setPosts] = useState([
-    { id: 1, user: '田中 美咲', avatar: '👩', text: 'AIツールを導入して売上が3倍になりました！メンバーの皆さんありがとう', likes: 24, time: '2時間前', liked: false },
-    { id: 2, user: '鈴木 健太', avatar: '👨', text: '予約システムのおかげで業務時間が半分以下に。本当に助かってます🙏', likes: 18, time: '4時間前', liked: false },
-    { id: 3, user: '山田 花子', avatar: '🧑', text: '来月からLINEマーケを始めます！アドバイスお願いします', likes: 7, time: '6時間前', liked: false },
-  ])
-  const [newPost, setNewPost] = useState('')
-
-  const toggleLike = (id) => {
-    setPosts(posts.map(p => p.id === id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p))
-  }
-
-  const addPost = () => {
-    if (!newPost.trim()) return
-    setPosts([{ id: Date.now(), user: 'あなた', avatar: '🙋', text: newPost, likes: 0, time: 'たった今', liked: false }, ...posts])
-    setNewPost('')
-  }
-
-  return (
-    <div className="demo-inner community-demo">
-      <div className="post-input">
-        <input value={newPost} onChange={e => setNewPost(e.target.value)} placeholder="投稿してみよう..." onKeyDown={e => e.key === 'Enter' && addPost()} />
-        <button onClick={addPost} className="btn-small">投稿</button>
-      </div>
-      <div className="post-feed">
-        {posts.map(p => (
-          <div key={p.id} className="post-item">
-            <span className="post-avatar">{p.avatar}</span>
-            <div className="post-body">
-              <div className="post-header"><strong>{p.user}</strong><span>{p.time}</span></div>
-              <p>{p.text}</p>
-              <button className={`like-btn${p.liked ? ' liked' : ''}`} onClick={() => toggleLike(p.id)}>❤️ {p.likes}</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── Demo: SNS自動化 ───────────────────────────────────────────────────────────
-
-const SNS_FEATURES = [
-  { icon: '🔍', label: 'リサーチ', desc: 'トレンド抽出' },
-  { icon: '✍️', label: '投稿自動生成', desc: '月60回' },
-  { icon: '🤖', label: '自動投稿', desc: 'Claude Computer Use' },
-  { icon: '⏰', label: '予約投稿', desc: '時間指定' },
-  { icon: '📸', label: '対応媒体', desc: 'Instagram ＋ X' },
-  { icon: '📊', label: '投稿数', desc: '月100本' },
-  { icon: '🏷️', label: 'ステータス管理', desc: 'ready / posted' },
+const CATEGORIES = [
+  { ic: "✨", name: "Beauty AI",     sub: "美容・セルフケア・健康", count: 14, color: "ci-1", key: "美容・ケア" },
+  { ic: "💼", name: "Business AI",   sub: "仕事・提案・生産性",     count: 41, color: "ci-2", key: "仕事を効率化" },
+  { ic: "📱", name: "SNS AI",        sub: "発信・運用・分析",       count: 18, color: "ci-3", key: "SNS発信" },
+  { ic: "🎬", name: "Creator AI",    sub: "動画・画像・デザイン",   count: 32, color: "ci-4", key: "動画・創作" },
+  { ic: "⚡", name: "Automation AI", sub: "自動化・効率化",         count: 27, color: "ci-5", key: "仕事を効率化" },
+  { ic: "🌐", name: "Future AI",     sub: "次世代・先端",           count: 22, color: "ci-6", key: "副業・収益" },
 ]
 
-const INITIAL_POSTS = [
-  { id: 1, content: 'AIで業務効率化！最新トレンドを解説します📱', platform: 'Instagram', date: '2026-05-01 09:00', status: 'posted' },
-  { id: 2, content: 'ChatGPT活用術10選｜今日から使えるプロンプト集🔥', platform: 'X', date: '2026-05-01 12:00', status: 'posted' },
-  { id: 3, content: '中小企業のDX推進を支援するAIツール3選✨', platform: 'Instagram', date: '2026-05-02 10:00', status: 'ready' },
-  { id: 4, content: 'SNS自動化で月100本投稿を実現する方法📅', platform: 'X', date: '2026-05-02 18:00', status: 'ready' },
-  { id: 5, content: 'AIマーケティングの最前線｜2026年のトレンド予測🚀', platform: 'Instagram', date: '2026-05-03 09:00', status: 'ready' },
+const RANKINGS = [
+  { rank: "01", gold: true,  ic: "🤖", name: "ChatGPT",    desc: "テキスト生成・対話・文書作成の定番",  tags: ["テキスト","無料プランあり"], badge: "急上昇", bc: "green",  url: "https://chat.openai.com" },
+  { rank: "02", gold: false, ic: "🎨", name: "Midjourney", desc: "高品質な画像生成AI",                  tags: ["画像","SNS向け"],            badge: "注目",   bc: "blue",   url: "https://midjourney.com" },
+  { rank: "03", gold: false, ic: "🎬", name: "Sora",       desc: "テキストから動画を生成する次世代AI",  tags: ["動画","2026注目"],           badge: "新着",   bc: "pink",   url: "https://openai.com/sora" },
+  { rank: "04", gold: false, ic: "🎵", name: "Suno AI",    desc: "AIが音楽を作曲・生成",                tags: ["音楽","Creator向け"],        badge: "話題",   bc: "purple", url: "https://suno.ai" },
 ]
 
-function SnsDemo() {
-  const [tab, setTab] = useState('schedule')
-  const [content, setContent] = useState('')
-  const [platforms, setPlatforms] = useState({ twitter: true, instagram: false })
-  const [scheduled, setScheduled] = useState(false)
-  const [date, setDate] = useState('2026-05-01')
-  const [time, setTime] = useState('09:00')
-  const [posts, setPosts] = useState(INITIAL_POSTS)
+function cn(...classes) { return classes.filter(Boolean).join(" ") }
 
-  const toggle = p => setPlatforms(prev => ({ ...prev, [p]: !prev[p] }))
-  const selectedCount = Object.values(platforms).filter(Boolean).length
-
-  const toggleStatus = (id) => {
-    setPosts(prev => prev.map(p =>
-      p.id === id ? { ...p, status: p.status === 'ready' ? 'posted' : 'ready' } : p
-    ))
-  }
-
-  return (
-    <div className="sns-demo-wrap">
-
-      {/* ── お試し期間バナー ── */}
-      <div className="sns-trial-banner">
-        <span className="trial-badge">お試し期間あり</span>
-        <span className="trial-text">
-          初期費用<strong>無料</strong>・月額
-          <span className="trial-price-orig">15,000円</span>
-          <span className="trial-arrow">→</span>
-          <span className="trial-price-sale">7,500円</span>
-        </span>
-        <span className="trial-limit">先着30名のみ</span>
-      </div>
-
-      {/* ── タブ ── */}
-      <div className="sns-tabs">
-        <button className={`sns-tab${tab === 'schedule' ? ' active' : ''}`} onClick={() => setTab('schedule')}>
-          ⏰ 予約投稿
-        </button>
-        <button className={`sns-tab${tab === 'features' ? ' active' : ''}`} onClick={() => setTab('features')}>
-          ⚡ 機能一覧
-        </button>
-        <button className={`sns-tab${tab === 'status' ? ' active' : ''}`} onClick={() => setTab('status')}>
-          🏷️ ステータス管理
-        </button>
-      </div>
-
-      {/* ── 予約投稿タブ ── */}
-      {tab === 'schedule' && (
-        <div className="sns-tab-content">
-          {scheduled ? (
-            <div className="sns-success">
-              <div className="success-icon">📅</div>
-              <h4>スケジュール登録完了！</h4>
-              <p>{date} {time} に {selectedCount}媒体へ自動投稿します</p>
-              <div className="post-preview">「{content}」</div>
-              <button className="btn-outline" onClick={() => { setScheduled(false); setContent('') }}>新しい投稿</button>
-            </div>
-          ) : (
-            <div className="sns-demo">
-              <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="投稿内容を入力（AIが自動生成することも可能）..." rows={3} className="sns-textarea" />
-              <div className="platform-row">
-                {[['twitter', '𝕏 X'], ['instagram', '📷 Instagram']].map(([k, label]) => (
-                  <label key={k} className={`platform-check${platforms[k] ? ' active' : ''}`}>
-                    <input type="checkbox" checked={platforms[k]} onChange={() => toggle(k)} />
-                    {label}
-                  </label>
-                ))}
-              </div>
-              <div className="schedule-row">
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} />
-                <input type="time" value={time} onChange={e => setTime(e.target.value)} />
-              </div>
-              <button className="btn-primary" onClick={() => content && selectedCount && setScheduled(true)} disabled={!content || !selectedCount}>
-                スケジュール登録
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── 機能一覧タブ ── */}
-      {tab === 'features' && (
-        <div className="sns-tab-content">
-          <div className="sns-features-grid">
-            {SNS_FEATURES.map(f => (
-              <div key={f.label} className="sns-feature-card">
-                <span className="sf-icon">{f.icon}</span>
-                <div>
-                  <div className="sf-label">{f.label}</div>
-                  <div className="sf-desc">{f.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── ステータス管理タブ ── */}
-      {tab === 'status' && (
-        <div className="sns-tab-content">
-          <p className="status-hint">バッジをクリックするとステータスを切り替えられます</p>
-          <div className="sns-status-table-wrap">
-            <table className="sns-status-table">
-              <thead>
-                <tr>
-                  <th>投稿内容</th>
-                  <th>媒体</th>
-                  <th>予定日時</th>
-                  <th>ステータス</th>
-                </tr>
-              </thead>
-              <tbody>
-                {posts.map(p => (
-                  <tr key={p.id}>
-                    <td className="post-cell">{p.content}</td>
-                    <td>
-                      <span className={`platform-badge ${p.platform === 'Instagram' ? 'pb-ig' : 'pb-x'}`}>
-                        {p.platform === 'Instagram' ? '📷' : '𝕏'} {p.platform}
-                      </span>
-                    </td>
-                    <td className="date-cell">{p.date}</td>
-                    <td>
-                      <button
-                        className={`status-pill ${p.status === 'posted' ? 'sp-posted' : 'sp-ready'}`}
-                        onClick={() => toggleStatus(p.id)}
-                        title="クリックで切り替え"
-                      >
-                        {p.status === 'posted' ? '✅ posted' : '🕐 ready'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="status-legend">
-            <span className="sp-ready">🕐 ready</span>＝投稿待ち
-            <span className="sp-posted">✅ posted</span>＝投稿済み
-          </div>
-        </div>
-      )}
-
-    </div>
-  )
-}
-
-// ── Demo: LP生成 ──────────────────────────────────────────────────────────────
-
-function LpDemo() {
-  const [industry, setIndustry] = useState('')
-  const [target, setTarget] = useState('')
-  const [usp, setUsp] = useState('')
-  const [generated, setGenerated] = useState(false)
-
-  if (generated) return (
-    <div className="demo-inner lp-preview">
-      <div className="lp-mock">
-        <div className="lp-hero-mock">
-          <div className="lp-badge">🎯 {industry}</div>
-          <h3>{usp || `${industry}のプロが教える`}<br />あなたの悩みを解決します</h3>
-          <p className="lp-target">対象：{target}</p>
-          <button className="lp-cta-btn">今すぐ無料相談</button>
-        </div>
-        <div className="lp-features-row">
-          {['実績200社以上', '平均ROI 340%', '導入後サポート付き'].map(f => (
-            <div key={f} className="lp-feature-item">✅ {f}</div>
-          ))}
-        </div>
-      </div>
-      <button className="btn-outline" onClick={() => setGenerated(false)}>再生成</button>
-    </div>
-  )
-
-  return (
-    <div className="demo-inner lp-form">
-      <div className="form-group">
-        <label>業種・ビジネス種類</label>
-        <select value={industry} onChange={e => setIndustry(e.target.value)}>
-          <option value="">選択してください</option>
-          {['コーチング', 'コンサルティング', 'EC・物販', 'サービス業', 'IT・SaaS', '教育・スクール'].map(i => <option key={i}>{i}</option>)}
-        </select>
-      </div>
-      <div className="form-group">
-        <label>ターゲット顧客</label>
-        <input value={target} onChange={e => setTarget(e.target.value)} placeholder="例：30〜40代の副業を始めたい会社員" />
-      </div>
-      <div className="form-group">
-        <label>強み・USP（任意）</label>
-        <input value={usp} onChange={e => setUsp(e.target.value)} placeholder="例：元大手コンサル出身" />
-      </div>
-      <button className="btn-primary" onClick={() => setGenerated(true)} disabled={!industry || !target}>
-        AIでLPを生成
-      </button>
-    </div>
-  )
-}
-
-// ── Demo: LINEマーケ ──────────────────────────────────────────────────────────
-
-function LineDemo() {
-  const [messages, setMessages] = useState([
-    { from: 'bot', text: 'こんにちは！何かお手伝いできますか？「料金」「予約」「サービス」などご質問ください😊' },
-  ])
-  const [input, setInput] = useState('')
-
-  const botReplies = {
-    '料金': 'プランは初期費用12万円〜、月額2万円〜となっております。詳しくは料金ページをご覧ください💰',
-    '予約': '予約のご希望ですね！こちらのリンクからお選びください👉 [予約ページへ]',
-    'サービス': '9種類のAIシステムをご用意しています。診断・講座販売・コミュニティ・SNS自動化など豊富なラインナップです✨',
-  }
-
-  const send = () => {
-    if (!input.trim()) return
-    const userMsg = { from: 'user', text: input }
-    const key = Object.keys(botReplies).find(k => input.includes(k))
-    const reply = { from: 'bot', text: key ? botReplies[key] : 'ありがとうございます！担当者より折り返しご連絡いたします。平均応答時間は2時間以内です😊' }
-    setMessages(prev => [...prev, userMsg, reply])
-    setInput('')
-  }
-
-  return (
-    <div className="demo-inner line-demo">
-      <div className="line-header">
-        <span>💬</span>
-        <span>LINE公式アカウント</span>
-        <span className="line-online">● オンライン</span>
-      </div>
-      <div className="line-chat">
-        {messages.map((m, i) => (
-          <div key={i} className={`line-msg ${m.from}`}>
-            {m.from === 'bot' && <span className="bot-icon">🤖</span>}
-            <div className="bubble">{m.text}</div>
-          </div>
-        ))}
-      </div>
-      <div className="line-input">
-        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()} placeholder="メッセージを送る..." />
-        <button onClick={send} className="btn-primary line-send">送信</button>
-      </div>
-    </div>
-  )
-}
-
-// ── Demo: 顧客管理 ────────────────────────────────────────────────────────────
-
-function CrmDemo() {
-  const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState(null)
-
-  const customers = [
-    { id: 1, name: '田中 美咲', company: '株式会社ABC', plan: 'プロ', value: 480000, status: 'アクティブ', last: '2026-04-25' },
-    { id: 2, name: '鈴木 健太', company: '合同会社DEF', plan: 'スタンダード', value: 240000, status: 'アクティブ', last: '2026-04-22' },
-    { id: 3, name: '山田 花子', company: '個人事業主', plan: 'スタンダード', value: 120000, status: '要フォロー', last: '2026-03-15' },
-    { id: 4, name: '佐藤 大輔', company: '株式会社GHI', plan: 'エンタープライズ', value: 1200000, status: 'アクティブ', last: '2026-04-26' },
-    { id: 5, name: '伊藤 さくら', company: '合同会社JKL', plan: 'プロ', value: 360000, status: '休眠', last: '2026-02-10' },
+function Particles() {
+  const DOTS = [
+    { w:3, h:3, c:"rgba(196,181,253,.5)",  t:"20%", l:"15%", d:7,  delay:0   },
+    { w:2, h:2, c:"rgba(125,211,252,.45)", t:"35%", r:"18%", d:9,  delay:1   },
+    { w:3, h:3, c:"rgba(134,239,172,.4)",  t:"65%", l:"10%", d:8,  delay:2.5 },
+    { w:2, h:2, c:"rgba(196,181,253,.35)", t:"72%", r:"22%", d:11, delay:.5  },
+    { w:2, h:2, c:"rgba(249,168,212,.35)", t:"50%", l:"40%", d:6,  delay:3   },
   ]
-
-  const filtered = customers.filter(c =>
-    c.name.includes(search) || c.company.includes(search) || c.plan.includes(search) || c.status.includes(search)
-  )
-
   return (
-    <div className="demo-inner crm-demo">
-      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 顧客名・会社名・プランで検索..." className="crm-input" />
-      <div className="crm-table-wrap">
-        <table className="crm-table">
-          <thead><tr><th>顧客名</th><th>プラン</th><th>累計金額</th><th>ステータス</th></tr></thead>
-          <tbody>
-            {filtered.map(c => (
-              <tr key={c.id} onClick={() => setSelected(selected?.id === c.id ? null : c)} className={selected?.id === c.id ? 'row-selected' : ''}>
-                <td><strong>{c.name}</strong><br /><small>{c.company}</small></td>
-                <td><span className="plan-badge">{c.plan}</span></td>
-                <td>¥{c.value.toLocaleString()}</td>
-                <td><span className={`status-badge ${c.status === 'アクティブ' ? 'st-active' : c.status === '要フォロー' ? 'st-warn' : 'st-inactive'}`}>{c.status}</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {selected && (
-        <div className="crm-detail">
-          <span><strong>{selected.name}</strong> — 最終接触: {selected.last} | 累計: ¥{selected.value.toLocaleString()}</span>
-          <button className="btn-small" onClick={() => setSelected(null)}>✕</button>
+    <div className="aurora-bg" aria-hidden="true">
+      <div className="orb orb-a" />
+      <div className="orb orb-b" />
+      <div className="orb orb-c" />
+      {DOTS.map((d, i) => (
+        <div key={i} className="p-dot" style={{
+          width: d.w, height: d.h, background: d.c,
+          top: d.t, left: d.l, right: d.r,
+          animationDuration: `${d.d}s`, animationDelay: `${d.delay}s`,
+        }} />
+      ))}
+    </div>
+  )
+}
+
+function SceneCard({ gradient, label, tag, children }) {
+  return (
+    <div className="scene-card">
+      <div className={cn("scene-img", gradient)}>{children}</div>
+      <div className="scene-overlay" />
+      <div className="scene-label">{label}</div>
+      <div className="scene-tag">{tag}</div>
+    </div>
+  )
+}
+
+function StoryCard({ className, gradient, uiStat, uiVal, scene, title, sub, children }) {
+  return (
+    <div className={cn("story-card", className, gradient)}>
+      <div className="light-bloom lb-warm" />
+      <div className="light-bloom lb-cool" />
+      {children}
+      <div className="story-overlay" />
+      {uiStat && (
+        <div className="story-ui">
+          <div className="ui-stat">{uiStat}</div>
+          <div className="ui-val">{uiVal}</div>
         </div>
       )}
-    </div>
-  )
-}
-
-// ── Demo: 予約システム ────────────────────────────────────────────────────────
-
-function BookingDemo() {
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [selectedTime, setSelectedTime] = useState(null)
-  const [confirmed, setConfirmed] = useState(false)
-
-  const daysInMonth = 30
-  const firstDay = 3 // April 2026 starts on Wednesday
-  const available = [28, 29, 30, 1, 2, 4, 7, 9, 11, 14, 16, 18, 21, 23, 25]
-  const pastDays = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
-  const times = ['10:00', '11:00', '13:00', '14:00', '15:00', '16:00']
-
-  if (confirmed) return (
-    <div className="demo-inner booking-success">
-      <div className="success-icon">🗓️</div>
-      <h4>予約が完了しました！</h4>
-      <p className="booking-info">2026年4月{selectedDate}日 {selectedTime}</p>
-      <p className="booking-note">確認メールをお送りしました。前日にリマインダーが自動送信されます。</p>
-      <button className="btn-outline" onClick={() => { setConfirmed(false); setSelectedDate(null); setSelectedTime(null) }}>別の日程を予約</button>
-    </div>
-  )
-
-  return (
-    <div className="demo-inner booking-demo">
-      <p className="cal-header">2026年 4月</p>
-      <div className="calendar">
-        {['日', '月', '火', '水', '木', '金', '土'].map(d => <div key={d} className="cal-dayname">{d}</div>)}
-        {[...Array(firstDay)].map((_, i) => <div key={`e${i}`} className="cal-empty" />)}
-        {[...Array(daysInMonth)].map((_, i) => {
-          const d = i + 1
-          const isAvail = available.includes(d) && !pastDays.includes(d)
-          const isPast = pastDays.includes(d)
-          const isSelected = selectedDate === d
-          return (
-            <button
-              key={d}
-              className={`cal-day${isAvail ? ' available' : ''}${isPast ? ' past' : ''}${isSelected ? ' selected' : ''}`}
-              onClick={() => isAvail && setSelectedDate(d)}
-              disabled={!isAvail}
-            >{d}</button>
-          )
-        })}
-      </div>
-      {selectedDate && (
-        <div className="time-slots">
-          <p>4月{selectedDate}日の時間帯を選択</p>
-          <div className="time-grid">
-            {times.map(t => (
-              <button key={t} className={`time-slot${selectedTime === t ? ' selected' : ''}`} onClick={() => setSelectedTime(t)}>{t}</button>
-            ))}
-          </div>
-        </div>
-      )}
-      {selectedDate && selectedTime && (
-        <button className="btn-primary" style={{ marginTop: 12 }} onClick={() => setConfirmed(true)}>予約を確定する</button>
-      )}
-    </div>
-  )
-}
-
-// ── Demo: サブスク管理 ────────────────────────────────────────────────────────
-
-function SubscriptionDemo() {
-  const [currentPlan, setCurrentPlan] = useState('standard')
-  const [upgraded, setUpgraded] = useState(null)
-
-  const plans = [
-    { id: 'starter', name: 'スターター', price: '20,000', features: ['基本機能', '1システム', 'メールサポート'], color: '#6b7280' },
-    { id: 'standard', name: 'スタンダード', price: '50,000', features: ['全機能', '3システム', 'チャットサポート', '月次レポート'], color: '#2563eb', popular: true },
-    { id: 'pro', name: 'プロ', price: '100,000', features: ['無制限', '全9システム', '専任担当者', '24hサポート'], color: '#f59e0b' },
-  ]
-
-  if (upgraded) {
-    const plan = plans.find(p => p.id === upgraded)
-    return (
-      <div className="demo-inner upgrade-success">
-        <div className="success-icon">💎</div>
-        <h4>{plan?.name}プランに変更しました！</h4>
-        <p>月額 ¥{plan?.price}円 — すぐにご利用いただけます。</p>
-        <button className="btn-outline" onClick={() => { setCurrentPlan(upgraded); setUpgraded(null) }}>マイページへ</button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="demo-inner sub-demo">
-      <div className="plan-grid">
-        {plans.map(p => {
-          const isCurrent = p.id === currentPlan
-          const planOrder = { starter: 0, standard: 1, pro: 2 }
-          const isUpgrade = planOrder[p.id] > planOrder[currentPlan]
-          return (
-            <div key={p.id} className={`plan-card${isCurrent ? ' current' : ''}${p.popular ? ' popular' : ''}`}>
-              {p.popular && <div className="popular-badge">人気No.1</div>}
-              {isCurrent && <div className="current-badge">現在</div>}
-              <h5>{p.name}</h5>
-              <div className="plan-price">¥{p.price}<span>/月</span></div>
-              <ul className="plan-features">
-                {p.features.map(f => <li key={f}>✓ {f}</li>)}
-              </ul>
-              {!isCurrent && (
-                <button className="btn-plan" style={{ background: p.color }} onClick={() => setUpgraded(p.id)}>
-                  {isUpgrade ? 'アップグレード' : 'ダウングレード'}
-                </button>
-              )}
-            </div>
-          )
-        })}
+      <div className="story-content">
+        <div className="story-scene">{scene}</div>
+        <div className="story-title">{title}</div>
+        {sub && <div className="story-sub">{sub}</div>}
       </div>
     </div>
   )
 }
 
-// ── Contact Modal ─────────────────────────────────────────────────────────────
-
-function ContactModal({ isOpen, onClose }) {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-
-  if (!isOpen) return null
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const subject = encodeURIComponent('【無料相談】お問い合わせ')
-    const body = encodeURIComponent(
-      `名前：${name}\nメールアドレス：${email}\n\nお問い合わせ内容：\n${message}`
-    )
-    window.location.href = `mailto:cnda.mt@gmail.com?subject=${subject}&body=${body}`
-    onClose()
-  }
-
+function DiagModal({ sel, onClose }) {
+  const results = DIAG_RESULTS[sel] || []
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="modal-header-left">
-            <div className="modal-icon">💬</div>
-            <h2>無料相談を申し込む</h2>
+          <div>
+            <div className="modal-label">AI診断結果</div>
+            <div className="modal-title">「{sel}」におすすめのAI</div>
           </div>
-          <button className="modal-close" onClick={onClose} aria-label="閉じる">✕</button>
+          <button className="modal-close" onClick={onClose}>✕</button>
         </div>
-        <p className="modal-lead">30分の無料コンサルティング。お気軽にご相談ください。</p>
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="modal-field">
-            <label htmlFor="modal-name">お名前<span className="modal-required"> *</span></label>
-            <input
-              id="modal-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="山田 太郎"
-              required
-            />
-          </div>
-          <div className="modal-field">
-            <label htmlFor="modal-email">メールアドレス<span className="modal-required"> *</span></label>
-            <input
-              id="modal-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              required
-            />
-          </div>
-          <div className="modal-field">
-            <label htmlFor="modal-message">お問い合わせ内容<span className="modal-required"> *</span></label>
-            <textarea
-              id="modal-message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="AIシステムの導入についてご相談したいことをご記入ください..."
-              rows={5}
-              required
-            />
-          </div>
-          <button type="submit" className="modal-submit-btn">
-            メールアプリで送信する →
+        <div className="modal-list">
+          {results.map(({ ic, name, desc, url }) => (
+            <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="modal-card">
+              <div className="modal-ic">{ic}</div>
+              <div className="modal-info">
+                <div className="modal-name">{name}</div>
+                <div className="modal-desc">{desc}</div>
+              </div>
+              <div className="modal-arrow">→</div>
+            </a>
+          ))}
+        </div>
+        <div className="modal-footer">
+          <button className="modal-consult" onClick={() => { onClose(); document.getElementById("consult").scrollIntoView({ behavior: "smooth" }) }}>
+            無料相談する
           </button>
-          <p className="modal-note">送信ボタンを押すとメールアプリが開き、内容が自動入力されます</p>
-        </form>
+        </div>
       </div>
     </div>
   )
 }
 
-// ── Demo Map ──────────────────────────────────────────────────────────────────
+function ConsultForm() {
+  const [sent, setSent] = useState(false)
+  const [form, setForm] = useState({ name: "", email: "", message: "" })
 
-const DEMOS = {
-  diagnosis: DiagnosisDemo,
-  course: CourseDemo,
-  community: CommunityDemo,
-  sns: SnsDemo,
-  lp: LpDemo,
-  line: LineDemo,
-  crm: CrmDemo,
-  booking: BookingDemo,
-  subscription: SubscriptionDemo,
-}
-
-// ── Main App ──────────────────────────────────────────────────────────────────
-
-export default function App() {
-  const [active, setActive] = useState('diagnosis')
-  const demoRef = useRef(null)
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const openModal = () => setModalOpen(true)
-  const closeModal = () => setModalOpen(false)
-
-  const select = (id) => {
-    setActive(id)
-    setTimeout(() => demoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+  async function handleSubmit(e) {
+    e.preventDefault()
+    const res = await fetch("https://formspree.io/f/xyzknqvp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    })
+    if (res.ok) setSent(true)
   }
 
-  const ActiveDemo = DEMOS[active]
-  const info = SYSTEMS.find(s => s.id === active)
+  if (sent) return (
+    <div className="consult-sent">
+      <div className="sent-ic">✉️</div>
+      <div className="sent-title">送信完了しました</div>
+      <div className="sent-sub">2営業日以内にご連絡いたします。</div>
+    </div>
+  )
 
   return (
-    <div className="app">
+    <form className="consult-form" onSubmit={handleSubmit}>
+      <input className="form-input" type="text" placeholder="お名前" required
+        value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+      <input className="form-input" type="email" placeholder="メールアドレス" required
+        value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+      <textarea className="form-textarea" placeholder="ご相談内容" rows={4} required
+        value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
+      <button className="form-submit" type="submit">無料相談を申し込む →</button>
+    </form>
+  )
+}
 
-      {/* ── Navbar ── */}
-      <nav className="navbar">
-        <div className="nav-inner">
-          <div className="nav-logo">
-            <span>⚡</span>
-            <span>AI<strong>カタログ</strong></span>
-          </div>
-          <div className="nav-links">
-            <a href="#systems">システム一覧</a>
-            <a href="#demo">デモ体験</a>
-            <a href="#pricing">料金</a>
-          </div>
-          <a href="#contact" className="nav-cta" onClick={(e) => { e.preventDefault(); openModal() }}>無料相談</a>
+export default function App() {
+  const [diagSel, setDiagSel] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [heroVisible, setHeroVisible] = useState(false)
+  const heroRef = useRef(null)
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 80)
+    return () => clearTimeout(t)
+  }, [])
+
+  function handleDiag(lb) {
+    setDiagSel(lb)
+    setModalOpen(true)
+  }
+
+  function scrollToConsult() {
+    document.getElementById("consult").scrollIntoView({ behavior: "smooth" })
+  }
+
+  return (
+    <div className="app-root">
+      {modalOpen && diagSel && <DiagModal sel={diagSel} onClose={() => setModalOpen(false)} />}
+
+      <section className={cn("hero", heroVisible && "hero--visible")} ref={heroRef}>
+        <Particles />
+        <div className="hero-eyebrow"><span className="eyebrow-dot" />AIのある、あたらしい日常へ</div>
+        <h1 className="hero-h1">AIと共に生きる<br /><em>未来の暮らしを、今日から。</em></h1>
+        <p className="hero-sub">あなたの毎日に、最適なAIを。<br />仕事も、美容も、暮らしも——静かに、豊かに。</p>
+
+        <div className="hero-scene">
+          <SceneCard gradient="sp-hero" label="朝の暮らし" tag="HERO">
+            <svg viewBox="0 0 160 120" className="scene-svg" aria-hidden="true">
+              <ellipse cx="80" cy="140" rx="100" ry="60" fill="rgba(147,139,250,.12)" />
+              <ellipse cx="120" cy="100" rx="60" ry="40" fill="rgba(251,191,36,.06)" />
+              <rect x="0"   y="70" width="20" height="50" rx="1" fill="rgba(255,255,255,.05)" />
+              <rect x="22"  y="55" width="14" height="65" rx="1" fill="rgba(255,255,255,.06)" />
+              <rect x="38"  y="65" width="18" height="55" rx="1" fill="rgba(255,255,255,.04)" />
+              <rect x="110" y="60" width="16" height="60" rx="1" fill="rgba(255,255,255,.05)" />
+              <rect x="128" y="50" width="20" height="70" rx="1" fill="rgba(255,255,255,.06)" />
+              <ellipse cx="80" cy="55" rx="9" ry="11" fill="rgba(255,255,255,.09)" />
+              <path d="M68 70 Q80 110 92 70" fill="rgba(255,255,255,.07)" />
+              <rect x="96" y="28" width="50" height="22" rx="5" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.18)" strokeWidth=".5" />
+              <text x="121" y="38" textAnchor="middle" fill="rgba(255,255,255,.6)" fontSize="8" fontFamily="Inter">AI Concierge</text>
+              <text x="121" y="46" textAnchor="middle" fill="rgba(134,239,172,.7)" fontSize="7" fontFamily="Inter">✦ オンライン</text>
+            </svg>
+          </SceneCard>
+          <SceneCard gradient="sp-work" label="仕事・ビジネス" tag="Business AI">
+            <svg viewBox="0 0 160 120" className="scene-svg" aria-hidden="true">
+              <ellipse cx="60" cy="80" rx="80" ry="50" fill="rgba(134,239,172,.07)" />
+              <rect x="30" y="50" width="70" height="45" rx="4" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" strokeWidth=".5" />
+              <rect x="35" y="55" width="60" height="32" rx="2" fill="rgba(99,102,241,.12)" />
+              <rect x="39" y="60" width="30" height="2" rx="1" fill="rgba(255,255,255,.25)" />
+              <rect x="39" y="65" width="44" height="2" rx="1" fill="rgba(255,255,255,.15)" />
+              <rect x="98" y="38" width="48" height="32" rx="6" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.18)" strokeWidth=".5" />
+              <text x="122" y="52" textAnchor="middle" fill="rgba(255,255,255,.5)" fontSize="7" fontFamily="Inter">生産性</text>
+              <text x="122" y="63" textAnchor="middle" fill="rgba(134,239,172,.85)" fontSize="12" fontFamily="Inter" fontWeight="300">+42%</text>
+            </svg>
+          </SceneCard>
+          <SceneCard gradient="sp-beauty" label="美容・セルフケア" tag="Beauty AI">
+            <svg viewBox="0 0 160 120" className="scene-svg" aria-hidden="true">
+              <ellipse cx="80" cy="60" rx="70" ry="60" fill="rgba(249,168,212,.08)" />
+              <ellipse cx="80" cy="65" rx="35" ry="42" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.1)" strokeWidth=".5" />
+              <ellipse cx="80" cy="55" rx="16" ry="20" fill="rgba(255,255,255,.06)" />
+              <line x1="50" y1="55" x2="115" y2="55" stroke="rgba(196,181,253,.25)" strokeWidth=".5" strokeDasharray="3,4" />
+              <rect x="96" y="36" width="46" height="20" rx="5" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.18)" strokeWidth=".5" />
+              <text x="119" y="44" textAnchor="middle" fill="rgba(255,255,255,.5)" fontSize="7" fontFamily="Inter">Beauty AI</text>
+              <text x="119" y="52" textAnchor="middle" fill="rgba(249,168,212,.8)" fontSize="8" fontFamily="Inter">似合う色</text>
+            </svg>
+          </SceneCard>
         </div>
-      </nav>
 
-      {/* ── Hero ── */}
-      <section className="hero" id="hero">
-        <div className="hero-inner">
-          <div className="hero-badge">🚀 AIシステム体験カタログ 2026</div>
-          <h1 className="hero-title">
-            あなたのビジネスを<br />
-            <span className="highlight">AIで自動化</span>しよう
-          </h1>
-          <p className="hero-sub">9種類のAIシステムを実際に体験。集客・販売・業務効率化をワンストップで実現。</p>
-
-          <div className="pricing-showcase">
-            <div className="price-block">
-              <span className="price-label">初期費用</span>
-              <span className="price-num">120,000<small>円〜</small></span>
-            </div>
-            <div className="price-sep" />
-            <div className="price-block">
-              <span className="price-label">月額費用</span>
-              <span className="price-num">20,000<small>円〜</small></span>
-            </div>
-          </div>
-
-          <div className="hero-actions">
-            <a href="#demo" className="btn-hero-primary">デモを体験する</a>
-            <a href="#contact" className="btn-hero-secondary" onClick={(e) => { e.preventDefault(); openModal() }}>無料相談はこちら</a>
-          </div>
-
-          <div className="hero-stats">
-            <div className="stat"><strong>200+</strong><span>導入実績</span></div>
-            <div className="stat"><strong>340%</strong><span>平均ROI</span></div>
-            <div className="stat"><strong>9種</strong><span>AIシステム</span></div>
-            <div className="stat"><strong>24h</strong><span>サポート</span></div>
-          </div>
+        <div className="cta-wrap">
+          <button className="btn-main" onClick={() => document.getElementById("diag").scrollIntoView({ behavior: "smooth" })}>AI診断を始める</button>
+          <button className="btn-sub" onClick={() => document.getElementById("ranking").scrollIntoView({ behavior: "smooth" })}>AIを探す</button>
         </div>
       </section>
 
-      {/* ── Appeal Section ── */}
-      <section className="appeal-section" id="appeal">
-        <div className="appeal-inner">
-          <div className="appeal-badge">2026年 実績50件以上</div>
-          <h2 className="appeal-title">
-            あなたのアプリシステムを、<br />
-            <span className="appeal-price-highlight">月額2万円〜</span>で導入
-          </h2>
-          <p className="appeal-desc">専門知識がなくても、自社専用のアプリ・システムを導入できます。完成したシステムは、あなたのサービスとしてサブスク化・販売・講座化に活用できます。</p>
-          <div className="appeal-emphasis-box">
-            あなたのアプリシステムから、<strong>1,000万円の売上を達成する方法</strong>も提案中。
+      <div className="divider" />
+
+      <section className="section">
+        <div className="sec-label">Life with AI</div>
+        <h2 className="sec-title">AIのある、日常の風景</h2>
+        <p className="sec-desc">働く・学ぶ・整える・繋がる。<br />あなたの毎日に、静かに寄り添うAIたち。</p>
+        <div className="story-grid">
+          <StoryCard className="large" gradient="sc-work" uiStat="AI処理中" uiVal="+42%" scene="Business AI" title="仕事が、もっと自分のものになる" sub="AIが整理・提案・実行まで、静かにサポート">
+            <svg viewBox="0 0 680 200" className="story-svg" aria-hidden="true">
+              <ellipse cx="200" cy="100" rx="200" ry="120" fill="rgba(134,239,172,.06)" />
+              <ellipse cx="500" cy="80"  rx="160" ry="100" fill="rgba(147,139,250,.06)" />
+              <rect x="80" y="80" width="300" height="90" rx="6" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.08)" strokeWidth=".5" />
+              <rect x="90" y="90" width="280" height="72" rx="3" fill="rgba(99,102,241,.1)" />
+              <rect x="100" y="100" width="120" height="3" rx="1" fill="rgba(255,255,255,.2)" />
+              <rect x="100" y="108" width="180" height="2" rx="1" fill="rgba(255,255,255,.12)" />
+              <rect x="420" y="60" width="160" height="90" rx="12" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.14)" strokeWidth=".5" />
+              <text x="440" y="82"  fill="rgba(255,255,255,.35)" fontSize="10" fontFamily="Inter">今日のタスク</text>
+              <text x="440" y="100" fill="rgba(255,255,255,.7)"  fontSize="13" fontFamily="Inter" fontWeight="300">AIが整理中...</text>
+              <circle cx="444" cy="116" r="3" fill="rgba(134,239,172,.7)" />
+              <text x="452" y="119" fill="rgba(134,239,172,.6)"  fontSize="9" fontFamily="Inter">3件 完了</text>
+              <circle cx="444" cy="130" r="3" fill="rgba(196,181,253,.5)" />
+              <text x="452" y="133" fill="rgba(196,181,253,.5)"  fontSize="9" fontFamily="Inter">2件 進行中</text>
+            </svg>
+          </StoryCard>
+          <div className="story-two">
+            <StoryCard className="small" gradient="sc-beauty" scene="Beauty AI" title="美容を、AIと一緒に">
+              <svg viewBox="0 0 300 150" className="story-svg" aria-hidden="true">
+                <ellipse cx="150" cy="75" rx="150" ry="90" fill="rgba(249,168,212,.06)" />
+                <ellipse cx="150" cy="75" rx="55" ry="65" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)" strokeWidth=".5" />
+                <rect x="180" y="38" width="90" height="38" rx="8" fill="rgba(255,255,255,.09)" stroke="rgba(255,255,255,.16)" strokeWidth=".5" />
+                <text x="225" y="54" textAnchor="middle" fill="rgba(255,255,255,.4)"  fontSize="9"  fontFamily="Inter">似合う色味</text>
+                <text x="225" y="68" textAnchor="middle" fill="rgba(249,168,212,.85)" fontSize="13" fontFamily="Inter" fontWeight="300">Spring</text>
+              </svg>
+            </StoryCard>
+            <StoryCard className="small" gradient="sc-sns" scene="SNS AI" title="発信が、もっと自由に">
+              <svg viewBox="0 0 300 150" className="story-svg" aria-hidden="true">
+                <ellipse cx="150" cy="75" rx="150" ry="90" fill="rgba(147,139,250,.06)" />
+                <rect x="110" y="20" width="80" height="110" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" strokeWidth=".5" />
+                <rect x="116" y="28" width="68" height="80" rx="4" fill="rgba(99,102,241,.12)" />
+                <rect x="195" y="45" width="70" height="35" rx="7" fill="rgba(255,255,255,.09)" stroke="rgba(255,255,255,.16)" strokeWidth=".5" />
+                <text x="230" y="59" textAnchor="middle" fill="rgba(255,255,255,.4)"  fontSize="8"  fontFamily="Inter">いいね数</text>
+                <text x="230" y="72" textAnchor="middle" fill="rgba(147,197,253,.85)" fontSize="12" fontFamily="Inter" fontWeight="300">3.2万</text>
+              </svg>
+            </StoryCard>
           </div>
-          <div className="appeal-cards">
-            <div className="appeal-card">
-              <div className="appeal-card-icon">🏢</div>
-              <h4>自社専用システムとして使える</h4>
-              <p>業務に合わせた完全カスタムのシステムを構築。あなたのブランドで展開できます。</p>
-            </div>
-            <div className="appeal-card">
-              <div className="appeal-card-icon">💰</div>
-              <h4>サブスク・販売に活用できる</h4>
-              <p>完成したシステムをサブスク・一括販売・講座化など多様な収益化に活用できます。</p>
-            </div>
-            <div className="appeal-card">
-              <div className="appeal-card-icon">📈</div>
-              <h4>売上導線まで提案</h4>
-              <p>システム導入だけでなく、売上につながる導線設計・戦略まで一緒に考えます。</p>
-            </div>
-          </div>
-          <div className="appeal-cta-row">
-            <a href="#contact" className="appeal-btn-primary" onClick={(e) => { e.preventDefault(); openModal() }}>無料相談する</a>
-            <a href="#contact" className="appeal-btn-line" onClick={(e) => { e.preventDefault(); openModal() }}>LINEで相談する</a>
-            <a href="#contact" className="appeal-btn-outline" onClick={(e) => { e.preventDefault(); openModal() }}>見積もりを依頼する</a>
-          </div>
+          <StoryCard className="medium" gradient="sc-evening" scene="Community AI" title="AIを通じて、人と繋がる" sub="学ぶ・シェアする・成長する——AIコミュニティへ">
+            <svg viewBox="0 0 680 160" className="story-svg" aria-hidden="true">
+              <ellipse cx="340" cy="80" rx="300" ry="100" fill="rgba(147,139,250,.06)" />
+              {[240,290,340,390,440].map((cx, i) => (
+                <circle key={i} cx={cx} cy="80" r={cx===340?22:20}
+                  fill={cx===340?"rgba(196,181,253,.1)":"rgba(255,255,255,.05)"}
+                  stroke={cx===340?"rgba(196,181,253,.25)":"rgba(255,255,255,.09)"}
+                  strokeWidth=".5" />
+              ))}
+              <text x="340" y="77" textAnchor="middle" fill="rgba(196,181,253,.7)" fontSize="9" fontFamily="Inter">AI</text>
+              <text x="340" y="87" textAnchor="middle" fill="rgba(196,181,253,.5)" fontSize="7" fontFamily="Inter">Hub</text>
+            </svg>
+          </StoryCard>
         </div>
       </section>
 
-      {/* ── Systems Grid ── */}
-      <section className="systems-section" id="systems">
-        <div className="section-inner">
-          <div className="section-header">
-            <h2>9つのAIシステム</h2>
-            <p>ビジネスの課題に合わせて最適なシステムを選択・カスタマイズ</p>
-          </div>
-          <div className="systems-grid">
-            {SYSTEMS.map(s => (
-              <button key={s.id} className={`system-card${active === s.id ? ' active' : ''}`} onClick={() => select(s.id)}>
-                <span className="sys-icon">{s.icon}</span>
-                <span className="sys-tag-label">{s.tag}</span>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
-                <span className="sys-try">体験する →</span>
+      <div className="divider" />
+
+      <DemoSection />
+
+      <div className="divider" />
+
+      <ExperienceCatalog />
+
+      <div className="divider" />
+
+      <section className="section" id="diag">
+        <div className="sec-label">AI Concierge</div>
+        <h2 className="sec-title">あなたに合うAIを診断</h2>
+        <p className="sec-desc">気になる暮らしのシーンを選ぶだけ。</p>
+        <div className="diag-card">
+          <p className="diag-q">今、どんな毎日をつくりたいですか？</p>
+          <div className="diag-grid">
+            {DIAG_ITEMS.map(({ ic, lb }) => (
+              <button key={lb} className={cn("diag-chip", diagSel === lb && "on")} onClick={() => handleDiag(lb)}>
+                <div className="ic">{ic}</div>
+                <div className="lb">{lb}</div>
               </button>
             ))}
           </div>
+          <p className="diag-hint">タップすると最適なAIをご提案します</p>
         </div>
       </section>
 
-      {/* ── Demo Area ── */}
-      <section className="demo-section" id="demo" ref={demoRef}>
-        <div className="section-inner">
-          <div className="demo-wrapper">
-            <div className="demo-header-bar">
-              <span className="demo-hicon">{info?.icon}</span>
-              <div>
-                <h2>{info?.title} デモ</h2>
-                <p>{info?.desc}</p>
+      <div className="divider" />
+
+      <section className="section">
+        <div className="sec-label">Categories</div>
+        <h2 className="sec-title">暮らしのシーンで選ぶ</h2>
+        <p className="sec-desc">ジャンルではなく、あなたの毎日から探す。</p>
+        <div className="cat-list">
+          {CATEGORIES.map(({ ic, name, sub, count, color, key }) => (
+            <button key={name} className="cat-row" onClick={() => handleDiag(key)}>
+              <div className={cn("cat-icon", color)}>{ic}</div>
+              <div className="cat-text">
+                <div className="cat-name">{name}</div>
+                <div className="cat-sub">{sub} / {count}ツール</div>
               </div>
-            </div>
-            <div className="demo-content">
-              <ActiveDemo key={active} />
-            </div>
-          </div>
+              <span className="cat-arr">›</span>
+            </button>
+          ))}
         </div>
       </section>
 
-      {/* ── Pricing ── */}
-      <section className="pricing-section" id="pricing">
-        <div className="section-inner">
-          <div className="section-header">
-            <h2>料金プラン</h2>
-            <p>ビジネス規模に合わせた柔軟なプランをご用意</p>
-          </div>
-          <div className="pricing-grid">
-            {[
-              {
-                name: 'ライト', init: '120,000', monthly: '20,000',
-                desc: 'まずは手軽にAIシステムを導入したい方へ',
-                features: ['テンプレート導入', '簡易カスタム対応'],
-                cta: '今すぐ始める', highlight: false,
-                monthlySuffix: true,
-              },
-              {
-                name: 'スタンダード', init: '300,000', monthly: '30,000',
-                desc: 'より本格的に活用したいビジネス向け',
-                features: ['一部カスタム対応', '導線設計'],
-                cta: '最も人気', highlight: true,
-                monthlySuffix: true,
-              },
-              {
-                name: 'プレミアム', init: '500,000', monthly: '40,000',
-                desc: '本格導入・成長を加速させたい方へ',
-                features: ['複数機能の組み合わせ', '売上設計込み'],
-                cta: '相談する', highlight: false,
-                suffix: true, monthlySuffix: true,
-              },
-            ].map(p => (
-              <div key={p.name} className={`pricing-card${p.highlight ? ' highlight' : ''}`}>
-                {p.highlight && <div className="pricing-pop-badge">人気No.1</div>}
-                <h3>{p.name}</h3>
-                <p className="pricing-desc">{p.desc}</p>
-                <div className="pricing-price-box">
-                  <div className="pp-init">初期費用 <strong>¥{p.init}</strong>円{p.suffix ? '〜' : ''}</div>
-                  <div className="pp-monthly">月額 <strong>¥{p.monthly}</strong>円{p.monthlySuffix ? '〜' : ''}</div>
+      <div className="divider" />
+
+      <section className="section" id="ranking">
+        <div className="rank-header">
+          <div className="sec-label" style={{ marginBottom: 0 }}>Ranking</div>
+          <span className="rank-live-badge">今急上昇</span>
+        </div>
+        <h2 className="sec-title">2026 注目のAI</h2>
+        <p className="sec-desc">日本で今もっとも使われているAIツール</p>
+        <div className="rank-list">
+          {RANKINGS.map(({ rank, gold, ic, name, desc, tags, badge, bc, url }) => (
+            <a key={name} href={url} target="_blank" rel="noopener noreferrer" className="rank-row">
+              <div className={cn("rank-num", gold && "gold")}>{rank}</div>
+              <div className={cn("rank-logo", `ci-${bc==="green"?3:bc==="blue"?2:bc==="pink"?1:4}`)}>
+                {ic}
+              </div>
+              <div className="rank-info">
+                <div className="rank-name">{name}</div>
+                <div className="rank-desc">{desc}</div>
+                <div className="rank-tags">
+                  {tags.map(t => <span key={t} className="rtag">{t}</span>)}
                 </div>
-                <ul className="pricing-features">
-                  {p.features.map(f => <li key={f}>✓ {f}</li>)}
-                </ul>
-                <a href="#contact" className={`pricing-cta-btn${p.highlight ? ' pc-primary' : ' pc-outline'}`} onClick={(e) => { e.preventDefault(); openModal() }}>{p.cta}</a>
               </div>
-            ))}
-          </div>
+              <div className={cn("rank-badge-up", `bc-${bc}`)}>↑ {badge}</div>
+            </a>
+          ))}
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="cta-section" id="contact">
-        <div className="cta-inner">
-          <h2>まずは無料相談から</h2>
-          <p>あなたのビジネスに最適なAIシステムをご提案します。<br />30分の無料コンサルティングをご活用ください。</p>
-          <div className="cta-actions">
-            <a href="#contact" className="btn-cta-primary" onClick={(e) => { e.preventDefault(); openModal() }}>無料相談を申し込む</a>
+      <div className="divider" />
 
-          </div>
-          <p className="cta-note">※ 営業時間：平日 10:00〜18:00 ｜ 返答率99% ｜ 平均応答2時間以内</p>
-        </div>
+      <section className="section" id="consult">
+        <div className="sec-label">Free Consultation</div>
+        <h2 className="sec-title">無料相談</h2>
+        <p className="sec-desc">AIの導入・活用についてお気軽にご相談ください。</p>
+        <ConsultForm />
       </section>
 
-      {/* ── Cat Puzzle Game（おまけ体験デモ） ── */}
-      <CatGame />
+      <div className="divider" />
 
-      {/* ── ニャンコ属性バトル ── */}
-      <NyanBattle />
+      <section className="cta-section">
+        <div className="cta-bg" />
+        <div className="cta-border" />
+        <h2 className="cta-h">AIと、もっと自由に。<br />あなたらしい未来へ。</h2>
+        <p className="cta-p">まずは無料診断から。あなたの毎日に合うAIを見つけましょう。</p>
+        <button className="cta-btn" onClick={scrollToConsult}>今すぐ始める →</button>
+      </section>
 
-      {/* ── Contact Modal ── */}
-      <ContactModal isOpen={modalOpen} onClose={closeModal} />
-
-      {/* ── Footer ── */}
       <footer className="footer">
-        <div className="footer-inner">
-          <div className="footer-logo"><span>⚡</span><span>AI<strong>カタログ</strong></span></div>
-          <p>© 2026 AIカタログ. All rights reserved.</p>
-        </div>
+        <div className="ft-brand">AIのある未来生活</div>
+        <nav className="ft-links">
+          <span className="ft-link" onClick={() => document.getElementById("ranking").scrollIntoView({ behavior: "smooth" })}>AIを探す</span>
+          <span className="ft-link" onClick={scrollToConsult}>無料相談</span>
+          <span className="ft-link" onClick={() => document.getElementById("diag").scrollIntoView({ behavior: "smooth" })}>AI診断</span>
+        </nav>
       </footer>
-
     </div>
   )
 }
+
+
