@@ -37,7 +37,7 @@ const NEWS_ITEMS = [
 
 const EXPERIENCE_CATALOG = [
   { id: 1, ic: "📱", title: "SNS診断", desc: "投稿作成・導線設計・集客戦略をAIが提案するSNS支援体験。Instagram・X・TikTok対応。", tags: ["SNS", "自動化", "集客"], url: "https://sns-diagnosis-one.vercel.app", ready: true },
-  { id: 2, ic: "👗", title: "バーチャル着せかえ", desc: "服装提案・着せ替え・クローゼット連携によるコーデ提案体験。あなたに似合うスタイルをAIが提案。", tags: ["ファッション", "コーデ", "スタイル"], url: "https://sns-diagnosis-one.vercel.app/", ready: true },
+  { id: 2, ic: "👗", title: "バーチャル着せかえ", desc: "服装提案・着せ替え・クローゼット連携によるコーデ提案体験。あなたに似合うスタイルをAIが提案。", tags: ["ファッション", "コーデ", "スタイル"], url: "https://virtual-tryon-app-phi.vercel.app/", ready: true },
   { id: 3, ic: "🪞", title: "第一印象診断", desc: "第一印象・魅力・改善点をカルテ形式で分析する美容診断体験。SNS・ビジネスに活かせる。", tags: ["美容", "顔分析", "カルテ"], url: "https://face-karte.vercel.app/karte", ready: true },
   { id: 4, ic: "🏪", title: "店舗診断", desc: "店舗の集客・導線・SNS戦略をAIが診断し具体的な改善策を提案する実践的体験。", tags: ["店舗DX", "集客", "診断"], url: "https://ai-diagnosis-omega.vercel.app/", ready: true },
   { id: 5, ic: "✂️", title: "3D型紙生成", desc: "頭の中のデザインを3D化し、型紙設計へつなげる未来型制作体験。ファッション×AIの最前線。", tags: ["型紙", "3D", "デザイン"], url: "https://ai-pattern-engine.vercel.app/", ready: true },
